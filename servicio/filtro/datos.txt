@@ -1,0 +1,329 @@
+SNPC_CC1322_10000574056_LAMPA#sh run 
+Building configuration...
+
+
+Current configuration : 10742 bytes
+!
+! Last configuration change at 15:49:36 UTC Wed Jul 28 2021
+!
+version 16.9
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+!
+hostname SNPC_CC1322_10000574056_LAMPA
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$Zbrf$bl.ufT5dBe.60ZZYb.Ywa0
+!
+no aaa new-model
+no ip source-route
+!         
+ip vrf DIBAM
+ rd 27651:24
+!
+ip vrf DIBAM_MUSEO
+ rd 27651:4044
+!
+ip vrf DIBAM_NOSAFE
+ rd 27651:8426
+!
+no ip bootp server
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+multilink bundle-name authenticated
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3592903775
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3592903775
+ revocation-check none
+ rsakeypair TP-self-signed-3592903775
+!
+!
+crypto pki certificate chain TP-self-signed-3592903775
+ certificate self-signed 01
+  30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 05050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33353932 39303337 3735301E 170D3231 30373233 31373037 
+  32315A17 0D333030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 35393239 
+  30333737 35308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201 
+  0A028201 0100E773 648ABBC3 5335CD04 C8255E92 074E4897 40DAE1D3 B0D559FF 
+  D71922C1 3686E46D C1A460B7 9EC6F4E4 B63D0319 8026F19D 2E89B3F4 ED0AF575 
+  BBBE32D4 AC5A88CE 335146BC F61F2BF8 4E11D6E8 2C6C3712 9AB849D4 E6D61EC6 
+  D06FCDE3 D1AE30D8 06CBD56E E61DD2AD B023A855 786B73BE B16945D1 F571F560 
+  CB786406 62F4BA1F 8BF8B975 6B6F11A7 E57E68EA 511CAA77 11A1A774 CEACD09D 
+  2A2DCB8A BF7352CF FC2A7652 E00AB737 065711A9 733DC84A CF957082 EC488595 
+  26BD337B 903B51F7 DE87C800 414F17FB C36775F8 56B2EAD4 CCF2EB83 A36CD6F5 
+  A966DBDF 41831FA1 EE2618C1 A76CCFD2 F126CCF1 F6E9D02A 7352B9BF 4AC2CE50 
+  33FD4AE3 57230203 010001A3 53305130 0F060355 1D130101 FF040530 030101FF 
+  301F0603 551D2304 18301680 14401AF4 326BA0DD 490327BB DF8B425B C85B1340 
+  D6301D06 03551D0E 04160414 401AF432 6BA0DD49 0327BBDF 8B425BC8 5B1340D6 
+  300D0609 2A864886 F70D0101 05050003 82010100 C1DAEFD6 AEB0895F EB574607 
+  5C348E26 90ACF6BD AD06143F F2260D92 220E3B16 043E911A 9D920101 F057ECB2 
+  1ED4E16F 5C8D7AA2 DF408CB3 4285D7F4 A098A06D D666A9A8 44ADD495 F1BD3CF3 
+  D0AE427D 1C25A609 1731CC7A 74F9C12F 92D13B9B FD02D187 F954F487 A4BB16AD 
+  9F15F3E7 28672880 D4E6FF66 05C684E8 45E84657 8B97DF60 07F716FC 3A3416B5 
+  257E28C7 3D38435A 6CAF34FD CED9F401 B688C45A 35EFD498 6697D59C 547BEADC 
+  398EE933 5967A03D 0CD6B4D3 65E9B85A 134A6861 E03A237D D5F852C5 2157E25A 
+  27BB02E3 5B111562 7BB5A126 D039CD02 75D5D4A2 1FA76A17 0908CB6B 5E98ABBA 
+  09E2B34D 0FDFA866 BA7C053D D1F0A306 7B130C8A
+        quit
+!
+license udi pid C1111-8P sn FGL2414L3LE
+no license smart enable
+!
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+redundancy
+ mode none
+!
+!
+vlan internal allocation policy ascending
+!
+!
+policy-map HACIA_RED_PADRE
+ class class-default
+  shape average 15570000   
+policy-map PADRE-VRF_DIBAM_MUSEO
+ class class-default
+  shape average 16000000   
+policy-map PADRE
+ class class-default
+  shape average 16000000   
+policy-map PADRE-VRF_DIBAM_NOSAFE
+ class class-default
+  shape average 16000000   
+!         
+!
+!
+!
+!
+!
+interface Loopback0
+ description ### ADMINISTRACION ###
+ ip address 10.175.14.248 255.255.255.255
+!
+interface GigabitEthernet0/0/0
+ description *** WAN ENTEL OTT:72102873024 C/S:10000574056 ***
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/0.2534
+ description *** WAN DIBAM ***
+ encapsulation dot1Q 2534
+ ip address 10.234.79.98 255.255.255.252
+ service-policy output HACIA_RED_PADRE
+!
+interface GigabitEthernet0/0/0.2535
+ description ### HACIA WAN PE5-METRO-CNT - Puerta PE: interface Bundle-Ether24.2535###
+ encapsulation dot1Q 2535
+ ip vrf forwarding DIBAM_MUSEO
+ ip address 10.234.79.186 255.255.255.252
+ service-policy output PADRE-VRF_DIBAM_MUSEO
+!
+interface GigabitEthernet0/0/0.2536
+ description ### HACIA WAN PE5-METRO-CNT - Puerta PE: interface Bundle-Ether24.2536###
+ encapsulation dot1Q 2536
+ ip vrf forwarding DIBAM_NOSAFE
+ ip address 10.234.79.214 255.255.255.252
+ service-policy output PADRE-VRF_DIBAM_NOSAFE
+!
+interface GigabitEthernet0/0/1
+ description ### HACIA_ETH4_MIKROTIK ###
+ no ip address
+ negotiation auto
+!
+interface GigabitEthernet0/0/1.10
+ description ### IP GW LAN_WIFI ###
+ encapsulation dot1Q 10
+ ip vrf forwarding DIBAM_NOSAFE
+ ip address 172.22.115.1 255.255.255.0
+!         
+interface GigabitEthernet0/0/1.77
+ description ### IP GW INTER-RED MK-CISCO ###
+ encapsulation dot1Q 77
+ ip address 10.41.10.109 255.255.255.252
+!
+interface GigabitEthernet0/0/1.777
+ description ### IP GW ENTEL-MONITORING ###
+ encapsulation dot1Q 777
+ ip address 10.234.181.65 255.255.255.248
+!
+interface GigabitEthernet0/1/0
+!
+interface GigabitEthernet0/1/1
+!
+interface GigabitEthernet0/1/2
+!
+interface GigabitEthernet0/1/3
+!
+interface GigabitEthernet0/1/4
+!
+interface GigabitEthernet0/1/5
+!
+interface GigabitEthernet0/1/6
+!
+interface GigabitEthernet0/1/7
+!
+interface Vlan1
+ no ip address
+!
+router bgp 64852
+ bgp log-neighbor-changes
+ timers bgp 5 15
+ neighbor 10.234.79.97 remote-as 27651
+ neighbor 10.234.79.97 description HACIA PE5-METRO-CNT 
+ !
+ address-family ipv4
+  network 10.13.78.0 mask 255.255.255.0
+  network 10.41.10.108 mask 255.255.255.252
+  network 10.175.14.248 mask 255.255.255.255
+  network 10.234.79.96 mask 255.255.255.252
+  network 10.234.181.64 mask 255.255.255.248
+  neighbor 10.234.79.97 activate
+ exit-address-family
+ !
+ address-family ipv4 vrf DIBAM_MUSEO
+  network 10.234.79.184 mask 255.255.255.252
+  neighbor 10.234.79.185 remote-as 27651
+  neighbor 10.234.79.185 local-as 64853 no-prepend replace-as
+  neighbor 10.234.79.185 description PE5-METRO-CNT 
+  neighbor 10.234.79.185 activate
+  neighbor 10.234.79.185 route-map FILTRO_RUTAS_MUSEO out
+ exit-address-family
+ !
+ address-family ipv4 vrf DIBAM_NOSAFE
+  network 10.253.176.136 mask 255.255.255.252
+
+  neighbor 10.253.176.137 remote-as 27651
+  neighbor  10.253.176.137  local-as 65022 no-prepend replace-as
+  neighbor  10.253.176.137  description PE5-METRO-CNT 
+  neighbor  10.253.176.137  activate
+  neighbor  10.253.176.137  soft-reconfiguration inbound
+  neighbor  10.253.176.137  route-map FILTRO_RUTAS_NOSAFE out
+ exit-address-family
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+ip route 10.13.78.0 255.255.255.0 10.41.10.110 name HACIA_MIKROTIK
+ip route vrf DIBAM_MUSEO 0.0.0.0 0.0.0.0 10.234.79.185
+ip route vrf DIBAM_NOSAFE 0.0.0.0 0.0.0.0 10.234.79.213
+!
+!
+ip access-list extended ACL_ACCESS
+ permit ip 200.7.26.0 0.0.0.255 any
+ permit ip 164.77.123.0 0.0.0.255 any
+ permit ip 10.0.0.0 0.255.255.255 any
+ permit ip 172.16.0.0 0.15.255.255 any
+ permit ip 192.168.0.0 0.0.255.255 any
+ permit ip 164.77.71.168 0.0.0.7 any
+ permit ip 200.11.85.0 0.0.0.255 any
+ permit ip 200.72.195.0 0.0.0.255 any
+ permit ip 186.67.180.0 0.0.0.255 any
+ permit ip 152.231.86.0 0.0.0.255 any
+!
+!
+ip prefix-list Publico_en_BGP_Dato seq 10 permit 10.234.181.64/29
+ip prefix-list Publico_en_BGP_Dato seq 15 permit 10.41.10.108/30
+ip prefix-list Publico_en_BGP_Dato seq 20 permit 10.175.14.248/32
+ip prefix-list Publico_en_BGP_Dato seq 25 permit 10.13.78.0/24
+ip prefix-list Publico_en_BGP_Dato seq 30 permit 10.234.79.96/30
+!
+ip prefix-list Publico_en_BGP_Dato_MUSEO seq 10 permit 10.234.79.184/30
+!
+ip prefix-list Publico_en_BGP_Dato_NOSAFE seq 10 permit 172.22.115.0/24
+ip prefix-list Publico_en_BGP_Dato_NOSAFE seq 15 permit 10.234.79.212/30
+!
+!
+route-map FILTRO_RUTAS_MUSEO permit 1 
+ match ip address prefix-list Publico_en_BGP_Dato_MUSEO
+!
+route-map FILTRO_RUTAS permit 1 
+ match ip address prefix-list Publico_en_BGP_Dato
+!
+route-map FILTRO_RUTAS_NOSAFE permit 1 
+ match ip address prefix-list Publico_en_BGP_Dato_NOSAFE
+!
+!
+!
+control-plane
+!
+banner exec ^CCCCCCCCCC    
+
+               @@@@@    @@@
+             @@@@@@@@@   @@@                       @@          @@
+            @@@    @@@@   @@@      @@@@@  @@@@@@@ @@@@  @@@@@  @@
+           @@@@     @@@   @@@     @@@  @@ @@@  @@  @@  @@   @@ @@
+           @@@@@@@@@@@@   @@@     @@@@@@@ @@@  @@  @@  @@@@@@@ @@
+           @@@@           @@@     @@@     @@@  @@  @@  @@      @@
+            @@@@    @@@   @@@      @@@@@@ @@@  @@  @@@  @@@@@@ @@@@
+             @@@@@@@@@   @@@
+               @@@@@    @@@
+                                   ||         ||
+                                   ||         ||
+                                  ||||       ||||
+                              ..:||||||:...:||||||:..
+                             C i s c o  S y s t e m s
+            ROUTER: CISCO C1111
+            CLIENTE: DIRECCION DE BIBLIOTECAS ARCHIVOS Y MUSEOS
+            DIRECCION: Sgto Aldea 1026, Lampa, RegiC3n Metropolitana - CC1322, Lampa-Centro Cultural
+            CIUDAD/COMUNA: LAMPA
+            COD.BIBLIOTECA:  CC1322
+            TIPO DE SERVICIO: ACCE MPLS
+            PE: PE5-METRO-CNT
+            NODO: S1-53-LAS-VERTIENTES-PCS
+            PUERTA NODO: interface GigabitEthernet0/0/4
+            VRF 1: DIBAM
+            PUERTA PE: interface Bundle-Ether24.2534
+            VRF 2: DIBAM_NOSAFE
+            PUERTA PE: interface Bundle-Ether24.2536
+            VRF 3: DIBAM_MUSEO
+            PUERTA PE: interface Bundle-Ether24.2535
+            ITP: BBC
+           *****************************************************
+           *  OTT: 72102873024        -    C/S: 10000574056     *
+           *****************************************************
+^C
+banner motd ^CCCCCCCCCC          
+            **************************************************************
+            *                       IMPORTANTE                           *
+            *                                                            *
+            * Usted esta ingresando a un dispositivo administrado por    *
+            * Entel. Este servicio esta restringido solamente a usuarios *
+            * autorizados. Todas las actividades realizadas en este      *
+            * sistema se registran y son enviados al administrador del   *
+            * sistema (usuario, direccion IP, tiempo de sesion). Si no   *
+            * cuenta con derechos de administracion sobre este equipo    *
+            * se recomienda finalizar su sesion de acceso de inmediato   *
+            *                                                            *
+            **************************************************************
+^C        
+!         
+line con 0
+ transport input none
+          
+SNPC_CC1322_10000574056_LAMPA#

@@ -1,0 +1,430 @@
+t 
+Building configuration...
+
+
+Current configuration : 8226 bytes
+!
+! No configuration change since last restart
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname IQUIQUE_01-001
+!
+boot-start-marker
+boot-end-marker
+!
+!
+logging buffered 52000
+enable secret 4 acNKCYDxhnJd/FMZS/KBApzfASJZ9F0VSv7zipOSjUc
+!
+aaa new-model
+!
+!
+aaa authentication login NO_AUTH none
+aaa authentication login ACS-TACACS group tacacs+ local
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ local 
+aaa authorization commands 15 default group tacacs+ local 
+aaa accounting exec ACS-TACACS start-stop group tacacs+
+aaa accounting commands 15 ACS-TACACS start-stop group tacacs+
+aaa accounting connection ACS-TACACS start-stop group tacacs+
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone CHILE -4 0
+!
+ip cef
+!
+!
+!
+ip dhcp excluded-address 10.1.66.1 10.1.66.10
+!
+ip dhcp pool ToIP
+ network 10.1.66.0 255.255.255.0
+ default-router 10.1.66.1 
+ option 150 ip 10.201.165.138 10.201.165.18 
+!
+!
+!
+no ip domain lookup
+ip domain name pdi.cl
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+voice-card 0
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CISCO2901/K9 sn FTX180681E6
+license boot module c2900 technology-package securityk9
+hw-module pvdm 0/0
+!
+!
+!
+username epc privilege 15 secret 4 nB7/aTNAFXq8JCg.c4OJ/gIQVfk5CULx5chL0.5q8PE
+username pdi privilege 14 secret 4 3he4DqXtiFJ6qIVKCgoRTOE2dffPhPupO7sbGPu.2Io
+!
+redundancy
+!
+!
+!
+!
+!
+!
+policy-map PADRE
+ class class-default
+  shape average 2150000
+!
+! 
+!
+crypto isakmp policy 100
+ encr aes
+ authentication pre-share
+ group 5
+crypto isakmp key PDIGM address 10.252.233.218 
+crypto isakmp key PDIGM address 10.252.233.253 
+!
+!
+!
+!
+crypto gdoi group PDIGDOI
+ identity number 134
+ server address ipv4 10.252.233.218
+ server address ipv4 10.252.233.253
+!
+!
+crypto map PDICRYPTO 10 gdoi 
+ set group PDIGDOI
+!
+!
+!
+!
+!
+interface Loopback0
+ description *** Administracion y Supervision ***
+ ip address 10.252.233.0 255.255.255.255
+!
+interface Embedded-Service-Engine0/0
+ no ip address
+ shutdown
+!
+interface GigabitEthernet0/0
+ description *** WAN MPLS - OTT:71401253367    C/S: 10000269896 ***
+ ip address 10.232.8.126 255.255.255.252
+ load-interval 30
+ duplex auto
+ speed auto
+ crypto map PDICRYPTO
+ service-policy output PADRE
+!
+interface GigabitEthernet0/1
+ description *** LAN CLIENTE ***
+ no ip address
+ duplex auto
+ speed auto
+!
+interface GigabitEthernet0/1.1
+ description *** LAN DATOS ***
+ encapsulation dot1Q 1 native
+ ip address 10.1.2.1 255.255.255.0 secondary
+ ip address 10.1.10.1 255.255.255.0 secondary
+ ip address 172.25.9.1 255.255.255.0
+ ip tcp adjust-mss 1360
+!
+interface GigabitEthernet0/1.20
+ description *** LAN VIDEO CONFERENCIA ***
+ encapsulation dot1Q 20
+ ip address 172.27.9.1 255.255.255.0
+!
+interface GigabitEthernet0/1.30
+ description *** LAN VOZ ***
+ encapsulation dot1Q 30
+ ip address 172.26.9.1 255.255.255.0
+!
+interface GigabitEthernet0/1.31
+ description **LAN ToIP**
+ encapsulation dot1Q 31
+ ip address 10.1.66.1 255.255.255.0
+!
+interface GigabitEthernet0/1.99
+ description *** ADMINISTRACION SW ***
+ encapsulation dot1Q 99
+ ip address 10.25.0.97 255.255.255.248
+!
+router bgp 64883
+ bgp log-neighbor-changes
+ network 10.1.2.0 mask 255.255.255.0
+ network 10.1.10.0 mask 255.255.255.0
+ network 10.1.66.0 mask 255.255.255.0
+ network 10.25.0.96 mask 255.255.255.248
+ network 10.252.233.0 mask 255.255.255.255
+ network 172.25.9.0 mask 255.255.255.0
+ network 172.26.9.0 mask 255.255.255.0
+ network 172.27.9.0 mask 255.255.255.0
+ timers bgp 5 15
+ neighbor 10.232.8.125 remote-as 27651
+ neighbor 10.232.8.125 send-community
+ neighbor 10.232.8.125 soft-reconfiguration inbound
+ neighbor 10.232.8.125 route-map Local_Prin in
+ neighbor 10.232.8.125 route-map Prepend_Prin out
+ neighbor 10.232.8.125 filter-list 1 out
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip as-path access-list 1 permit ^$
+no ip http server
+no ip http secure-server
+!
+ip tacacs source-interface Loopback0
+!
+ip access-list standard MON
+ permit 10.232.35.216 0.0.0.7
+ permit 164.77.123.0 0.0.0.255
+ip access-list standard MON-PDI
+ permit 10.134.100.120
+ permit 172.21.5.35
+ permit 10.134.1.63
+ permit 172.21.1.5
+!
+!
+ip prefix-list Publico_en_BGP_Dato seq 5 permit 172.25.9.0/24
+ip prefix-list Publico_en_BGP_Dato seq 6 permit 10.252.233.0/32
+ip prefix-list Publico_en_BGP_Dato seq 7 permit 10.25.0.96/29
+ip prefix-list Publico_en_BGP_Dato seq 8 permit 10.1.2.0/24
+ip prefix-list Publico_en_BGP_Dato seq 13 permit 10.1.10.0/24
+!
+ip prefix-list Publico_en_BGP_Tel seq 5 permit 172.26.9.0/24
+ip prefix-list Publico_en_BGP_Tel seq 6 permit 10.1.66.0/24
+!
+ip prefix-list Publico_en_BGP_Video seq 5 permit 172.27.9.0/24
+ip sla responder
+!
+route-map Prepend_Prin permit 10
+ match ip address prefix-list Publico_en_BGP_Dato
+ set community 64883:10
+!
+route-map Prepend_Prin permit 20
+ match ip address prefix-list Publico_en_BGP_Video
+ set community 64883:20
+!
+route-map Prepend_Prin permit 30
+ match ip address prefix-list Publico_en_BGP_Tel
+ set community 64883:30
+!
+route-map Local_Prin permit 10
+ set local-preference 500
+!
+!
+snmp-server community pdilwan RW MON
+snmp-server community MonPdi RO MON-PDI
+snmp-server ifindex persist
+snmp-server enable traps snmp authentication linkdown linkup coldstart warmstart
+snmp-server enable traps transceiver all
+snmp-server enable traps tty
+snmp-server enable traps license
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps flash insertion removal
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps entity-sensor threshold
+snmp-server enable traps energywise
+snmp-server enable traps vstack
+snmp-server enable traps cef resource-failure peer-state-change peer-fib-state-change inconsistency
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps config-ctid
+snmp-server enable traps entity
+snmp-server enable traps fru-ctrl
+snmp-server enable traps event-manager
+snmp-server enable traps ipmulticast
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps cpu threshold
+snmp-server enable traps syslog
+snmp-server enable traps vtp
+snmp-server enable traps ipsla
+tacacs-server host 10.201.158.7 key 7 044B0F57
+!
+!
+!
+control-plane
+!
+!
+voice-port 0/0/0
+!
+voice-port 0/0/1
+ !
+ !
+ !
+!
+!
+!
+mgcp profile default
+!
+!
+!
+!
+!
+gatekeeper
+ shutdown
+!
+!
+banner motd ^CCC
+ 
+  
+  
+  
+             @@@@@
+           @@@@@@@@@   @@@                       @@          @@
+          @@@    @@@@   @@@      @@@@@  @@@@@@@  @@@  @@@@@  @@
+         @@@@     @@@   @@@     @@@  @@ @@@  @@  @@  @@   @@ @@
+         @@@@@@@@@@@@    @@     @@@@@@@ @@@  @@  @@  @@@@@@@ @@
+         @@@@           @@@     @@@     @@@  @@  @@  @@      @@
+          @@@@    @@    @@@      @@@@@@ @@@  @@  @@@  @@@@@@ @@@@
+           @@@@@@@@@  @@@
+             @@@@@
+                   POLICIA DE INVESTIGACIONES
+                   IQUIQUE - AV. SALVADOR ALLENDE # 2901
+                   Cuartel Aeropuerto Iquique  -  01-001
+                   ROUTER - PRIMARIO
+                   ************************************
+                   * OTT:71401253367  C/S:10000269896 *
+                   ************************************ 
+^C
+!
+line con 0
+ login authentication NO_AUTH
+ stopbits 1
+line aux 0
+ privilege level 15
+ accounting connection ACS-TACACS
+ accounting commands 15 ACS-TACACS
+ accounting exec ACS-TACACS
+ login authentication ACS-TACACS
+ transport input all
+ stopbits 1
+line 2
+ no activation-character
+ no exec
+ transport preferred none
+ transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+ stopbits 1
+line vty 0 4
+ session-timeout 2 
+ exec-timeout 10 30
+ privilege level 15
+ password 7 0541571F2545
+ accounting connection ACS-TACACS
+ accounting commands 15 ACS-TACACS
+ accounting exec ACS-TACACS
+ login authentication ACS-TACACS
+ transport input all
+line vty 5 15
+ session-timeout 2 
+ exec-timeout 10 30
+ privilege level 15
+ password 7 0541571F2545
+ accounting connection ACS-TACACS
+ accounting commands 15 ACS-TACACS
+ accounting exec ACS-TACACS
+ login authentication ACS-TACACS
+ transport input all
+!
+scheduler allocate 20000 1000
+ntp server 10.252.233.216
+ntp server 10.252.233.252
+!
+end
+
+Cisco IOS Software, C2900 Software (C2900-UNIVERSALK9-M), Version 15.2(4)M5, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2013 by Cisco Systems, Inc.
+Compiled Fri 13-Sep-13 14:59 by prod_rel_team
+
+ROM: System Bootstrap, Version 15.0(1r)M16, RELEASE SOFTWARE (fc1)
+
+IQUIQUE_01-001 uptime is 13 hours, 46 minutes
+System returned to ROM by power-on
+System restarted at 07:55:45 CHILE Wed May 4 2022
+System image file is "flash0:c2900-universalk9-mz.SPA.152-4.M5.bin"
+Last reload type: Normal Reload
+Last reload reason: power-on
+
+
+
+This product contains cryptographic features and is subject to United
+States and local country laws governing import, export, transfer and
+use. Delivery of Cisco cryptographic products does not imply
+third-party authority to import, export, distribute or use encryption.
+Importers, exporters, distributors and users are responsible for
+compliance with U.S. and local country laws. By using this product you
+agree to comply with applicable laws and regulations. If you are unable
+to comply with U.S. and local laws, return this product immediately.
+
+A summary of U.S. laws governing Cisco cryptographic products may be found at:
+http://www.cisco.com/wwl/export/crypto/tool/stqrg.html
+
+If you require further assistance please contact us by sending email to
+export@cisco.com.
+
+Cisco CISCO2901/K9 (revision 1.0) with 483328K/40960K bytes of memory.
+Processor board ID FTX180681E6
+2 Gigabit Ethernet interfaces
+1 terminal line
+1 Virtual Private Network (VPN) Module
+2 Voice FXO interfaces
+DRAM configuration is 64 bits wide with parity enabled.
+255K bytes of non-volatile configuration memory.
+250880K bytes of ATA System CompactFlash 0 (Read/Write)
+
+
+License Info:
+
+License UDI:
+
+-------------------------------------------------
+Device#	  PID			SN
+-------------------------------------------------
+*0  	  CISCO2901/K9          FTX180681E6     
+
+
+
+Technology Package License Information for Module:'c2900' 
+
+-----------------------------------------------------------------
+Technology    Technology-package           Technology-package
+              Current       Type           Next reboot  
+------------------------------------------------------------------
+ipbase        ipbasek9      Permanent      ipbasek9
+security      securityk9    Permanent      securityk9
+uc            uck9          Permanent      uck9
+data          None          None           None
+
+Configuration register is 0x2102
+
+Interface                  IP-Address      OK? Method Status                Protocol
+Embedded-Service-Engine0/0 unassigned      YES NVRAM  administratively down down    
+GigabitEthernet0/0         10.232.8.126    YES NVRAM  up                    up      
+GigabitEthernet0/1         unassigned      YES NVRAM  up                    up      
+GigabitEthernet0/1.1       172.25.9.1      YES NVRAM  up                    up      
+GigabitEthernet0/1.20      172.27.9.1      YES NVRAM  up                    up      
+GigabitEthernet0/1.30      172.26.9.1      YES NVRAM  up                    up      
+GigabitEthernet0/1.31      10.1.66.1       YES NVRAM  up                    up      
+GigabitEthernet0/1.99      10.25.0.97      YES NVRAM  up                    up      
+Loopback0                  10.252.233.0    YES NVRAM  up                    up  
