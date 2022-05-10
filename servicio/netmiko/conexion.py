@@ -16,7 +16,8 @@ class Comando:
             ssh.exit_enable_mode()
             print("CONEXION TELNET OK")
             return comandoList
-        except Exception as e:     
+        except Exception as e:    
+             
             try:
                 cisco_router_ssh=TipoConexion.conexionSSH()
                 ssh = netmiko.ConnectHandler(**cisco_router_ssh)
@@ -28,5 +29,3 @@ class Comando:
                 return comandoList
             except Exception as e:
                 print(f"Error de conexion {e}")
-if __name__ == '__main__':
-    print(Comando.enviarComando("sh ip int brief"))

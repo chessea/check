@@ -36,7 +36,6 @@ for ip in listaIp:
 
 
     toExcel.cargarEncabezado(lista)
-
     toExcel.cargarRun(shRun)
     toExcel.cargarBrief(brief)
     toExcel.cargarVersion(shVer)

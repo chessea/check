@@ -44,8 +44,8 @@ class toExcel:
     def cargarEncabezado(cls,lista):    
             book =openpyxl.load_workbook('/home/fr/Documentos/pythonEntel/servicio/store/datos.xlsx')
             sheet = book['encabezado']
-            sheet['B3']=lista[0]
-            sheet['B4']=lista[1]
+            sheet['B3']=lista[1]
+            sheet['B4']=lista[0]
             sheet['B11']=lista[2]
             sheet['B17']=lista[3]
             sheet['B22']=lista[4]

@@ -2,7 +2,7 @@ class TipoConexion:
     
     @classmethod
     def conexionTelnet(cls,ip):
-      
+        
         cisco_router_telnet = {
             'device_type': 'cisco_ios_telnet',
             'host': ip,
