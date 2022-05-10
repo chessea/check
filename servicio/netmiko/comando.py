@@ -19,15 +19,14 @@ class Comando:
             return comandoList
         except Exception as e:  
             print("ERROR TELNET")   
-        try:
-            cisco_router_ssh=TipoConexion.conexionSSH(ip)
-            ssh = netmiko.ConnectHandler(**cisco_router_ssh)
-            ssh.enable()
-            result = ssh.send_command(comando,delay_factor=1)
-            comandoList=result.split('\n')
-            ssh.disconnect()
-          
-            print("CONEXION SSH OK")
-            return comandoList
-        except Exception as e:
-                print("ERROR SSH")
+            try:
+                cisco_router_ssh=TipoConexion.conexionSSH(ip)
+                ssh = netmiko.ConnectHandler(**cisco_router_ssh)
+                ssh.enable()
+                result = ssh.send_command(comando,delay_factor=2)
+                comandoList=result.split('\n')
+                ssh.disconnect()
+                print("CONEXION SSH OK")
+                return comandoList
+            except Exception as e:
+                    print("ERROR SSH")

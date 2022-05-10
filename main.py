@@ -2,9 +2,9 @@ from time import time
 from models.DatosChecklist import DatosChecklist
 from models.User import User
 from models.Equipo import Equipo
-from servicio.FiltroDatos import FiltroDatos
+
 from servicio.netmiko.comando import Comando
-from servicio.toExcel.toexcel import  toExcel
+from servicio.toExcel.listaToExcel import  ListaToExcel
 from servicio.filtro.filtroNetmiko import  FiltroNetmiko
 
 
@@ -32,46 +32,22 @@ for ip in listaIp:
     lista.append(ip)
     lista.append(snmp)
     lista.append(interface)
+    lista.append(brief)
+    lista.append(shVer)
+    lista.append(shRun)
+  
+    ListaToExcel.datosToExcel(lista)
     
-
-
-    toExcel.cargarEncabezado(lista)
-    toExcel.cargarRun(shRun)
-    toExcel.cargarBrief(brief)
-    toExcel.cargarVersion(shVer)
-   
-
-
+    
+    
 ''' 
-x= range(0,len(brief))
 
-contador=3
-for todos in x:
-    contador=contador+1
-    book =openpyxl.load_workbook('/home/fr/Documentos/pythonEntel/servicio/store/datos.xlsx')
-    sheet = book['interfaces']
-    sheet[f'A{contador}']=brief[todos]
-    book.save('/home/fr/Documentos/pythonEntel/servicio/store/datos.xlsx')
-print('FIN')  '''
-
-
-
-
-
-''' datos=FiltroDatos.obtenerCSOTT();
-ott=datos[0]
-cs=datos[1]
-ipMonitoreo=datos[2]
-interface=datos[3]
-
-
-check = DatosChecklist(ott, cs, ipMonitoreo, interface,"N/A","JUNJI")
-print(check)
+    toExcel.cargarBrief(brief, lista)
+    toExcel.cargarVersion(shVer, lista)
+    toExcel.cargarEncabezado(lista)
+    toExcel.cargarRun(shRun, lista)
+   
  '''
-
-
-
-
 
 
 
