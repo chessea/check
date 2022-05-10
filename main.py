@@ -2,23 +2,42 @@ from time import time
 from models.DatosChecklist import DatosChecklist
 from models.User import User
 from models.Equipo import Equipo
-from servicio.FiltroDatos import FiltroDatos
+
 from servicio.netmiko.comando import Comando
-from servicio.toExcel.toexcel import  toExcel
+from servicio.toExcel.listaToExcel import  ListaToExcel
 from servicio.filtro.filtroNetmiko import  FiltroNetmiko
 
 
 
-listaIp=["10.0.0.1",]
+print('Ingrese usuario:')
+x = input()
+
+print('Ingrese password:')
+y = input()
+
+listaIp=["10.0.0.1", "10.0.0.1"]
 
 for ip in listaIp:
+    
+    listaComandos=['sh run | exclude !', 
+                   'sh ip int brief',
+                   'sh ver', 
+                   'sh run | include hostname',
+                   'sh inventory | include "Chassis"',
+                   "sh run | include snmp-server community"]
   
+    comandos=Comando.enviarComando(listaComandos,ip,x,y)
+  
+    '''   
     shRun=Comando.enviarComando("sh run | exclude !",ip)
     brief=Comando.enviarComando("sh ip int brief",ip)
     shVer=Comando.enviarComando("sh ver",ip)
     shRunHost=Comando.enviarComando("sh run | include hostname",ip)
     shModel=Comando.enviarComando('sh inventory | include "Chassis"',ip)
     snmpcomando=Comando.enviarComando("sh run | include snmp-server community",ip)
+    '''
+    
+    shRun, brief, shVer, shRunHost, shModel, snmpcomando = comandos
     
     lista=FiltroNetmiko.obtenerCSOTT(shRun)
     hostname=FiltroNetmiko.obtenerHostName(shRunHost)
@@ -32,47 +51,22 @@ for ip in listaIp:
     lista.append(ip)
     lista.append(snmp)
     lista.append(interface)
+    lista.append(brief)
+    lista.append(shVer)
+    lista.append(shRun)
+  
+    ListaToExcel.datosToExcel(lista)
     
-
-
-    toExcel.cargarEncabezado(lista)
-
-    toExcel.cargarRun(shRun)
-    toExcel.cargarBrief(brief)
-    toExcel.cargarVersion(shVer)
-   
-
-
+    
+    
 ''' 
-x= range(0,len(brief))
 
-contador=3
-for todos in x:
-    contador=contador+1
-    book =openpyxl.load_workbook('/home/fr/Documentos/pythonEntel/servicio/store/datos.xlsx')
-    sheet = book['interfaces']
-    sheet[f'A{contador}']=brief[todos]
-    book.save('/home/fr/Documentos/pythonEntel/servicio/store/datos.xlsx')
-print('FIN')  '''
-
-
-
-
-
-''' datos=FiltroDatos.obtenerCSOTT();
-ott=datos[0]
-cs=datos[1]
-ipMonitoreo=datos[2]
-interface=datos[3]
-
-
-check = DatosChecklist(ott, cs, ipMonitoreo, interface,"N/A","JUNJI")
-print(check)
+    toExcel.cargarBrief(brief, lista)
+    toExcel.cargarVersion(shVer, lista)
+    toExcel.cargarEncabezado(lista)
+    toExcel.cargarRun(shRun, lista)
+   
  '''
-
-
-
-
 
 
 
