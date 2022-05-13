@@ -27,7 +27,7 @@ class Comando:
             comandoListSNMP=shSnmp.split('\n')
             
             ssh.exit_enable_mode()
-            print("CONEXION TELNET OK")
+            print(f"CONEXION TELNET OK {ip}")
             lista.append(comandoListShRun)
             lista.append(comandoListBrief)
             lista.append(comandoListVer)
@@ -37,7 +37,7 @@ class Comando:
             
             return lista
         except Exception as e:  
-            print("ERROR TELNET")   
+            print(f"ERROR TELNET {ip}")   
             try:
                 cisco_router_ssh=TipoConexion.conexionSSH(ip , x ,y)
                 ssh = netmiko.ConnectHandler(**cisco_router_ssh)
@@ -57,7 +57,7 @@ class Comando:
                 comandoListSNMP=shSnmp.split('\n')
                 
                 ssh.disconnect()
-                print("CONEXION SSH OK")
+                print(f"CONEXION SSH OK {ip}")
                 
                 lista.append(comandoListShRun)
                 lista.append(comandoListBrief)
@@ -68,4 +68,4 @@ class Comando:
                 
                 return lista
             except Exception as e:
-                    print("ERROR SSH")
+                    print("ERROR SSH {ip}")

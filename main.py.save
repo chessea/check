@@ -9,37 +9,43 @@ from servicio.filtro.filtroNetmiko import  FiltroNetmiko
 from bullet import VerticalPrompt, Input, Password
 
 
-
 print("Inicio")
 cli= VerticalPrompt([
-    Input(prompt="Ingrese usuario: "),
-    Password(prompt="Ingrese password : ", hidden="*")],spacing=0)
+    Input(prompt="usuario: "),
+    Password(prompt="password ", hidden="*")],spacing=0)
 result=cli.launch()
 
-x=result[0][1]
-y=result[1][1]
+print(result[0][1)
+print(result[1][1]
 
+'''
+print('Ingrese usuario:')
+x = input()
 
-with open("/home/Python/Test/DIBAM-telnet-hosts-100", "r") as datos:
-    valores=[]
-    for ip in datos:
-      valores.append(ip)
-       
+print('Ingrese password:')
+y = input()
+'''
+listaIp=[ "10.236.15.134","10.236.94.86", "10.236.15.46","10.235.233.30","10.235.230.222"]
 
-
-#listaIp=[ "10.252.127.126", "10.236.15.134","10.236.94.86", "10.236.15.46","10.235.233.30","10.235.230.222","10.234.47.230"]
-
-for ip in valores:
+for ip in listaIp:
     
     listaComandos=['sh run | exclude !', 
                    'sh ip int brief',
                    'sh ver', 
                    'sh run | include hostname',
-                   'sh inventory | include "Chassis|chassis"',
+                   'sh inventory | include "Chassis"',
                    "sh run | include snmp-server community"]
   
     comandos=Comando.enviarComando(listaComandos,ip,x,y)
   
+    '''   
+    shRun=Comando.enviarComando("sh run | exclude !",ip)
+    brief=Comando.enviarComando("sh ip int brief",ip)
+    shVer=Comando.enviarComando("sh ver",ip)
+    shRunHost=Comando.enviarComando("sh run | include hostname",ip)
+    shModel=Comando.enviarComando('sh inventory | include "Chassis"',ip)
+    snmpcomando=Comando.enviarComando("sh run | include snmp-server community",ip)
+    '''
     
     shRun, brief, shVer, shRunHost, shModel, snmpcomando = comandos
     
@@ -52,7 +58,7 @@ for ip in valores:
   
     lista.append(hostname)
     lista.append(model)
-    lista.append(ip.strip())
+    lista.append(ip)
     lista.append(snmp)
     lista.append(interface)
     lista.append(brief)
@@ -63,6 +69,16 @@ for ip in valores:
     
     
     
+''' 
+
+    toExcel.cargarBrief(brief, lista)
+    toExcel.cargarVersion(shVer, lista)
+    toExcel.cargarEncabezado(lista)
+    toExcel.cargarRun(shRun, lista)
+   
+ '''
+
+
 
 
 

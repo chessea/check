@@ -34,18 +34,20 @@ class FiltroNetmiko:
     @classmethod
     def obtenerModelo(cls, comoandoModelo):
         modelo=comoandoModelo[0].split(' ')
-        if len(modelo)>0:
+        if len(modelo)>1:
             return modelo[4]
         else:
-            return 'Sin Datos'
+            modelo="sin datos"
+            return modelo
     
     @classmethod
     def obtenerSNMP(cls, comandoSnmp):
         snmp=comandoSnmp[0].split(' ')
-        if len(snmp)>0:
+        if len(snmp)>1:
             return snmp[2]
         else:
-            return 'Sin Datos'    
+            snmp="sin datos" 	
+            return snmp    
         
     @classmethod
     def  filtroInterface(cls,comandoShRun):
