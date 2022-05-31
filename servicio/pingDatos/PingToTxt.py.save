@@ -3,7 +3,7 @@ from ping3 import ping
 import os
 from ipaddress import IPv4Address
 
-with open('CAJ-lista1','r') as stop_words: 
+with open('ipg','r') as stop_words: 
     lista = [linea.strip() for linea in stop_words]
 
 file = open('ping.txt', "w")
